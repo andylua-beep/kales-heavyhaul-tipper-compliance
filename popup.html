@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semi-Trailer Axle Load &amp; Road Compliance Checker | KALES</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="popup-mode">
+  <div class="popup-shell">
+    <div class="popup-header">
+      <div>
+        <div class="brand-kicker">KALES SEMI-TRAILER COMPLIANCE</div>
+        <h1>Axle Load &amp; Road Law Check</h1>
+      </div>
+      <div class="popup-actions">
+        <button id="btnOpenFullTab" class="btn-primary" type="button" title="Open full semi-trailer compliance checker &amp; schematic">Full check ↗</button>
+      </div>
+    </div>
+
+    <form id="quickForm" autocomplete="off">
+      <label class="field">
+        <span>Market</span>
+        <select id="quickRegion"></select>
+      </label>
+      <div class="row-2">
+        <label class="field">
+          <span>Trailer model</span>
+          <select id="quickModel"></select>
+        </label>
+        <label class="field">
+          <span>Suspension</span>
+          <select id="quickSuspension"></select>
+        </label>
+      </div>
+      <div class="row-2">
+        <label class="field">
+          <span id="quickAxlesLabel">Axles</span>
+          <input type="number" id="quickAxles" step="1" inputmode="numeric" />
+          <small class="hint" id="quickAxlesHint"></small>
+        </label>
+        <label class="field">
+          <span>Tyres</span>
+          <select id="quickTyre"></select>
+        </label>
+      </div>
+      <label class="field" id="quickDollyField">
+        <span>Tractor dolly</span>
+        <select id="quickDolly"></select>
+      </label>
+      <label class="field">
+        <span class="slider-top">Payload <strong id="quickWeightVal"></strong></span>
+        <input type="range" id="quickWeight" step="0.5" />
+      </label>
+    </form>
+
+    <div id="quickStatus" class="status-pill st-ok" aria-live="polite"></div>
+
+    <div class="mini-kpis">
+      <div class="mini-kpi">
+        <span>GCW / limit</span>
+        <strong id="qGvw"></strong>
+      </div>
+      <div class="mini-kpi">
+        <span id="qAxleLabel">Per axle / capacity</span>
+        <strong id="qAxle"></strong>
+      </div>
+      <div class="mini-kpi">
+        <span>Max legal payload</span>
+        <strong id="qRated"></strong>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <a id="quickCategoryLink" href="https://www.kalestruck.com/product-category/trailers/lowboy-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">View KALES lowboy specs ↗</a>
+      <a href="https://www.kalestruck.com/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener" class="muted-link">kalestruck.com</a>
+    </div>
+  </div>
+  <script src="popup.bundle.js"></script>
+</body>
+</html>
