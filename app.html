@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semi-Trailer Axle Load &amp; Road Compliance Checker — Lowboy &amp; Dump | KALES</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="studio">
+    <header class="studio-header">
+      <div>
+        <div class="brand-kicker">KALES SEMI-TRAILER ROAD COMPLIANCE CHECKER</div>
+        <h1>Heavy Haul, Lowboy &amp; Dump Semi-Trailer Compliance Checker — Local Axle, Bridge &amp; Permit Laws</h1>
+      </div>
+      <div class="header-actions no-print">
+        <button id="btnSavePreset" class="btn-secondary" type="button">Save project</button>
+        <button id="btnPrintSpec" class="btn-secondary" type="button">Print spec sheet</button>
+        <a id="headerPrimaryCta" href="https://www.kalestruck.com/product-category/trailers/machinery-equipment-transport/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener" class="btn-primary">KALES catalog ↗</a>
+      </div>
+    </header>
+
+    <form class="controls no-print" id="configForm" autocomplete="off">
+      <section class="card">
+        <h2><span class="step">01</span> Market &amp; regulation</h2>
+        <label class="field">
+          <span>Operating market</span>
+          <select id="region" name="region"></select>
+        </label>
+        <p class="card-note" id="regionSource"></p>
+      </section>
+
+      <section class="card">
+        <h2><span class="step">02</span> Category &amp; trailer</h2>
+        <div class="category-tabs" id="categoryGroup" role="group" aria-label="Semi-trailer category"></div>
+        <div class="chip-grid" id="modelGroup" role="group" aria-label="Trailer model"></div>
+        <label class="field">
+          <span>Tractor</span>
+          <select id="tractor" name="tractor"></select>
+        </label>
+        <label class="field">
+          <span>Tractor fifth-wheel height <em>mm</em></span>
+          <input type="number" id="fifthWheelMm" name="fifthWheelMm" step="10" inputmode="numeric" />
+          <small class="hint" id="hint-fifthWheelMm"></small>
+        </label>
+        <label class="field" id="dollyField">
+          <span>Tractor dolly (jeep dolly)</span>
+          <select id="dollyLines" name="dollyLines"></select>
+          <small class="hint">Each line = 2 axles · 18 t. 2 lines + tractor fifth wheel ≈ 50–55 t of gooseneck load. Dolly fifth wheel 1.1 m; landing legs sit on the semi-trailer.</small>
+        </label>
+        <label class="field is-hidden" id="positionsField">
+          <span>Car positions</span>
+          <select id="carPositions" name="carPositions"></select>
+          <small class="hint">Half on each deck. Sets the usual length, axles, rear overhang and tractor — all still editable.</small>
+        </label>
+        <div class="row-2">
+          <label class="field" id="lengthField">
+            <span>Trailer length <em>m</em></span>
+            <input type="number" id="lengthM" name="lengthM" step="0.1" inputmode="decimal" />
+            <small class="hint" id="hint-lengthM"></small>
+          </label>
+          <label class="field" id="overhangField">
+            <span>Rear overhang <em>m</em></span>
+            <input type="number" id="rearOverhangM" name="rearOverhangM" step="0.1" inputmode="decimal" />
+            <small class="hint" id="hint-rearOverhangM"></small>
+          </label>
+        </div>
+        <label class="field" id="neckField">
+          <span>Gooseneck length <em>m</em></span>
+          <input type="number" id="neckM" name="neckM" step="0.05" inputmode="decimal" />
+          <small class="hint" id="hint-neckM"></small>
+        </label>
+        <label class="field">
+          <span id="deckLabel">Loading deck height <em>mm</em></span>
+          <input type="number" id="deckMm" name="deckMm" step="10" inputmode="numeric" />
+          <small class="hint" id="hint-deckMm"></small>
+        </label>
+      </section>
+
+      <section class="card">
+        <h2><span class="step">03</span> Running gear</h2>
+        <label class="field">
+          <span>Suspension</span>
+          <select id="suspension" name="suspension"></select>
+        </label>
+        <label class="field is-hidden" id="speedField">
+          <span>Travel speed (sets axle-line rating)</span>
+          <select id="speedRating" name="speedRating"></select>
+        </label>
+        <div class="row-2">
+          <label class="field">
+            <span id="axlesLabel">Axles</span>
+            <input type="number" id="axles" name="axles" step="1" inputmode="numeric" />
+            <small class="hint" id="hint-axles"></small>
+          </label>
+          <label class="field">
+            <span>Axle spacing <em>m</em></span>
+            <input type="number" id="spacingM" name="spacingM" step="0.01" inputmode="decimal" />
+            <small class="hint" id="hint-spacingM"></small>
+          </label>
+        </div>
+        <label class="field">
+          <span>Tyres</span>
+          <select id="tyre" name="tyre"></select>
+          <small class="hint" id="tyreHint"></small>
+        </label>
+      </section>
+
+      <section class="card">
+        <h2><span class="step">04</span> Cargo</h2>
+        <label class="field">
+          <span>Payload <em>t</em></span>
+          <input type="number" id="cargo.weightT" name="cargo.weightT" step="0.5" inputmode="decimal" />
+          <small class="hint" id="hint-cargo.weightT"></small>
+        </label>
+        <div id="machineryCargo">
+          <label class="field">
+            <span>Cargo CG from kingpin <em>m</em></span>
+            <input type="number" id="cargo.posM" name="cargo.posM" step="0.1" inputmode="decimal" />
+            <small class="hint" id="hint-cargo.posM"></small>
+          </label>
+          <div class="row-2">
+            <label class="field">
+              <span>Footprint length <em>m</em></span>
+              <input type="number" id="cargo.lengthM" name="cargo.lengthM" step="0.1" inputmode="decimal" />
+              <small class="hint" id="hint-cargo.lengthM"></small>
+            </label>
+            <label class="field">
+              <span>Width <em>m</em></span>
+              <input type="number" id="cargo.widthM" name="cargo.widthM" step="0.05" inputmode="decimal" />
+              <small class="hint" id="hint-cargo.widthM"></small>
+            </label>
+          </div>
+          <label class="field">
+            <span>Cargo height above deck <em>m</em></span>
+            <input type="number" id="cargo.heightM" name="cargo.heightM" step="0.05" inputmode="decimal" />
+            <small class="hint" id="hint-cargo.heightM"></small>
+          </label>
+        </div>
+        <div class="is-hidden" id="materialField">
+          <div class="row-2">
+            <label class="field">
+              <span>Bulk material</span>
+              <select id="material" name="material"></select>
+            </label>
+            <label class="field">
+              <span>Body volume <em>m³</em></span>
+              <input type="number" id="volumeM3" name="volumeM3" step="0.5" list="tipperVolumePresets" inputmode="decimal" />
+              <datalist id="tipperVolumePresets">
+                <option value="16"></option><option value="20"></option><option value="24"></option>
+                <option value="28"></option><option value="32"></option><option value="36"></option>
+                <option value="40"></option><option value="45"></option><option value="50"></option>
+              </datalist>
+              <small class="hint" id="hint-volumeM3"></small>
+            </label>
+          </div>
+          <small class="hint">Pick cubic capacity (m³) or payload (t); side wall height adjusts to hold the load.</small>
+        </div>
+      </section>
+    </form>
+
+    <main class="results">
+      <section id="verdict" class="verdict st-ok" aria-live="polite">
+        <h2 id="verdictTitle"></h2>
+        <p id="verdictText"></p>
+        <p class="verdict-meta" id="verdictMeta"></p>
+      </section>
+
+      <div class="svg-stage" id="cadStage"></div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <section class="card">
+        <h2>Checks</h2>
+        <div id="checksTables"></div>
+      </section>
+
+      <section class="card">
+        <h2>Regulation basis</h2>
+        <p><strong id="regionName"></strong> <span class="badge" id="regionBadge"></span></p>
+        <p class="card-note" id="regionSourceFull"></p>
+        <ul class="region-notes" id="regionNotes"></ul>
+        <p class="disclaimer">Disclaimer: Static engineering estimate for preliminary reference only (equalised axle group, level cargo, nominal tare). Compiled road laws and permit rules may be outdated, amended, locally varied, or contain inaccuracies — always verify against the current official local regulations, road authorities, and final KALES engineering drawings before ordering or dispatch.</p>
+      </section>
+
+      <section class="card">
+        <div class="match">
+          <div>
+            <strong id="matchedModelTitle"></strong>
+            <p class="card-note" id="matchedModelDesc"></p>
+          </div>
+          <a id="matchedModelUrl" href="https://www.kalestruck.com/product-category/trailers/lowboy-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener" class="btn-primary">View specs &amp; request quote ↗</a>
+        </div>
+        <nav class="catalog-links" aria-label="KALES catalog">
+          <a href="https://www.kalestruck.com/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">KALES Home</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/machinery-equipment-transport/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Machinery Transport</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/lowboy-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Lowboy Trailer</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/removable-gooseneck-lowboy-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">RGN Lowboy</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/hydraulic-modular-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Hydraulic Modular</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/car-carrier-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Car Carrier</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/sand-coal-transport/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Sand &amp; Coal Transport</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/tipper-semi-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Tipper Semi-Trailer</a>
+          <a href="https://www.kalestruck.com/product-category/trailers/side-tipper-trailer/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Side Tipper</a>
+          <a href="https://www.kalestruck.com/product-category/trucks/tractor-truck/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Tractor Trucks</a>
+          <a href="https://www.kalestruck.com/product-category/parts/tyres-rims-running-gear/?utm_source=chrome-extension&utm_medium=referral&utm_campaign=heavyhaul" target="_blank" rel="noopener">Tyres &amp; Running Gear</a>
+        </nav>
+      </section>
+
+      <section class="card no-print">
+        <h2>Saved projects</h2>
+        <ul class="preset-list" id="savedPresetsList"></ul>
+      </section>
+    </main>
+  </div>
+  <script src="app.bundle.js"></script>
+</body>
+</html>
